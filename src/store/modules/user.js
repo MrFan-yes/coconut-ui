@@ -1,4 +1,4 @@
-import { login, logout, getInfo } from '@/api/login'
+import { login, logout, getInfo, loginByGitee } from '@/api/login'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 
 const user = {
@@ -29,6 +29,19 @@ const user = {
   },
 
   actions: {
+    // 第三方登录
+    LoginByGitee({ commit }, body) {
+      return new Promise((resolve, reject) => {
+        loginByGitee(body.code, body.uuid).then(res => {
+          setToken(res.token)
+          commit('SET_TOKEN', res.token)
+          resolve()
+        }).catch(error => {
+          reject(error)
+        })
+      })
+    },
+
     // 登录
     Login({ commit }, userInfo) {
       const username = userInfo.username.trim()
@@ -51,7 +64,15 @@ const user = {
       return new Promise((resolve, reject) => {
         getInfo().then(res => {
           const user = res.user
-          const avatar = (user.avatar == "" || user.avatar == null) ? require("@/assets/images/profile.jpg") : process.env.VUE_APP_BASE_API + user.avatar;
+          // 获取用户头像
+          let avatar = '';
+          if (user.avatar === '' || user.avatar == null) {
+            avatar = require('@/assets/images/profile.jpg')
+          } else if (user.avatar.startsWith('http')) {
+            avatar = user.avatar
+          } else {
+            avatar = process.env.VUE_APP_BASE_API + user.avatar
+          }
           if (res.roles && res.roles.length > 0) { // 验证返回的roles是否是一个非空数组
             commit('SET_ROLES', res.roles)
             commit('SET_PERMISSIONS', res.permissions)

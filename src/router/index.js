@@ -46,6 +46,12 @@ export const constantRoutes = [
     component: () => import('@/views/login'),
     hidden: true
   },
+  // 第三方登录回调地址路由
+  {
+    path: '/callback',
+    component: () => import('@/views/loginByGitee'),
+    hidden: true
+  },
   {
     path: '/register',
     component: () => import('@/views/register'),

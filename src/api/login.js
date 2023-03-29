@@ -57,3 +57,31 @@ export function getCodeImg() {
     timeout: 20000
   })
 }
+
+// 第三方授权页面
+export function PreLoginByGitee() {
+  return request({
+    url: '/PreLoginByGitee',
+    headers: {
+      isToken: false
+    },
+    method: 'get'
+  })
+}
+
+// 第三方登录
+export function loginByGitee(code, uuid) {
+  const data = {
+    code,
+    source: 'Gitee',
+    uuid
+  }
+  return request({
+    url: '/loginByGitee',
+    headers: {
+      isToken: false
+    },
+    method: 'post',
+    data: data
+  })
+}
